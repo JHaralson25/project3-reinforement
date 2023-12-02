@@ -62,6 +62,22 @@ class ValueIterationAgent(ValueEstimationAgent):
     def runValueIteration(self):
         # Write value iteration code here
         "*** YOUR CODE HERE ***"
+        for i in range(self.iterations):
+            valCopy = self.values.copy()
+            for state in self.mdp.getStates():
+                maxVal = -float("inf")
+                for action in self.mdp.getPossibleActions(state):
+                    value = 0.0
+                    for state_prob in self.mdp.getTransitionStatesAndProbs(state, action):
+                        value+=state_prob[1]*(self.mdp.getReward(state, action, state_prob[0])+self.discount*valCopy[state_prob[0]])
+                    if maxVal == -float("inf"):
+                        maxVal = value
+                    else:
+                        maxVal = max(value, maxVal)
+                if self.mdp.isTerminal(state):
+                    self.values[state] = 0.0
+                else:
+                    self.values[state] = maxVal
 
 
     def getValue(self, state):
@@ -77,7 +93,11 @@ class ValueIterationAgent(ValueEstimationAgent):
           value function stored in self.values.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        Q = 0
+        states_and_probs = self.mdp.getTransitionStatesAndProbs(state, action)
+        for state_prob in states_and_probs:
+            Q += state_prob[1]*(self.mdp.getReward(state, action, state_prob[0])+self.discount*self.getValue(state_prob[0]))
+        return Q
 
     def computeActionFromValues(self, state):
         """
@@ -89,7 +109,18 @@ class ValueIterationAgent(ValueEstimationAgent):
           terminal state, you should return None.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        if self.mdp.isTerminal(state):
+            return None
+        
+        Qvals_and_Actions = []
+
+        for action in self.mdp.getPossibleActions(state):
+            Qvals_and_Actions.append((self.getQValue(state,action), action))
+        
+        sortedQVals = sorted(Qvals_and_Actions, key=lambda x: x[0], reverse=True)
+        return sortedQVals[0][1]
+
+
 
     def getPolicy(self, state):
         return self.computeActionFromValues(state)
