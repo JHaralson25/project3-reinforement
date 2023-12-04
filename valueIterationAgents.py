@@ -206,8 +206,7 @@ class PrioritizedSweepingValueIterationAgent(AsynchronousValueIterationAgent):
                 for action in self.mdp.getPossibleActions(state):
                     qval = self.computeQValueFromValues(state, action)
                     maxval = max(qval, maxval)
-                currval = self.values[state]
-                pqueue.push(state, -abs(maxval-currval))
+                pqueue.push(state, -abs(maxval-self.values[state]))
         for i in range(self.iterations):
             if pqueue.isEmpty():
                 break
@@ -224,7 +223,6 @@ class PrioritizedSweepingValueIterationAgent(AsynchronousValueIterationAgent):
                     for action in self.mdp.getPossibleActions(p):
                         qval = self.computeQValueFromValues(p, action)
                         maxval = max(qval, maxval)
-                    currval = self.values[p]
-                    diff = abs(maxval-currval)
+                    diff = abs(maxval-self.values[p])
                     if diff>self.theta:
                         pqueue.update(p, -diff)
