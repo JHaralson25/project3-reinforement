@@ -109,13 +109,11 @@ class ValueIterationAgent(ValueEstimationAgent):
         if self.mdp.isTerminal(state):
             return None
         
-        Qvals_and_Actions = []
-
+        maxAction = (None, -float("inf"))
         for action in self.mdp.getPossibleActions(state):
-            Qvals_and_Actions.append((self.getQValue(state,action), action))
-        
-        Qvals_and_Actions = sorted(Qvals_and_Actions, key=lambda x: x[0], reverse=True)
-        return Qvals_and_Actions[0][1]
+            if self.getQValue(state, action) > maxAction[1]:
+                maxAction = (action, self.getQValue(state, action))
+        return maxAction[0]
 
 
 

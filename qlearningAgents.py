@@ -78,11 +78,11 @@ class QLearningAgent(ReinforcementAgent):
         "*** YOUR CODE HERE ***"
         if len(self.getLegalActions(state)) == 0:
             return None
-        vals = []
+        maxAction = (None, -float("inf"))
         for action in self.getLegalActions(state):
-            vals.append((action, self.getQValue(state,action)))
-        vals = sorted(vals, key=lambda x: x[1], reverse=True)
-        return vals[0][0]
+            if (self.getQValue(state, action)) > maxAction[1]:
+                maxAction = (action, self.getQValue(state, action))
+        return maxAction[0]
 
     def getAction(self, state):
         """
