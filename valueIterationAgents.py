@@ -70,7 +70,7 @@ class ValueIterationAgent(ValueEstimationAgent):
                 else:
                     maxVal = -float("inf")
                     for action in self.mdp.getPossibleActions(state):
-                        value = 0.0
+                        value = 0
                         for state_prob in self.mdp.getTransitionStatesAndProbs(state, action):
                             value+=state_prob[1]*(self.mdp.getReward(state, action, state_prob[0])+self.discount*valCopy[state_prob[0]])
                         maxVal = max(value, maxVal)
